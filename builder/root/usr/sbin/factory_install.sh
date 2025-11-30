@@ -12,7 +12,7 @@ while true; do
     echo "    ██████╔╝██║  ██║╚██████╔╝██████╔╝"
     echo "    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝"
     echo "  depthcharge automatic update blocking"
-    echo "    daub was found by zeglol (Hannah)"
+    echo "        daub was found by zeglol"
     echo "        script by HarryTarryJarry"
     echo ""
 
@@ -23,8 +23,6 @@ while true; do
 
     case $choice in
         1)
-            echo "Starting Daub..."
-            
             # get_internal take from https://github.com/applefritter-inc/BadApple-icarus
             get_internal() {
                 # get_largest_cros_blockdev does not work in BadApple.
@@ -112,7 +110,7 @@ while true; do
             rm -rf /stateful/*
             umount /stateful
             echo "DO NOT POWERWASH IN CHROMEOS! YOUR DEVICE WILL BOOTLOOP! (bootloop is fixable by recovering)"
-            echo "Daub completed successfully!"
+            echo "DAUB completed successfully!"
             read -p "Press Enter to return to menu..."
             ;;
         2)
