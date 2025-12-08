@@ -128,16 +128,10 @@ while true; do
 			read -p "Press Enter to return to menu..."
 			;;
 		2)
-			# New Option 2: Run daub.sh
-			daub_main
-			;;
-		3)
-			# Original Option 2 -> New Option 3: Shell
 			echo "Type 'exit' to go back to main menu"
 			bash
 			;;
-		4)
-			# Original Option 3 -> New Option 4: Reboot
+		3)
 			reboot -f
 			;;
 		*)
