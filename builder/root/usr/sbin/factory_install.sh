@@ -11,18 +11,40 @@ mountlvm(){
     }
 }
 
+# Helper function to find the active root device using cgpt priority
+find_active_root_cgpt() {
+    local intdis=$1  # e.g., /dev/sda
+    local intdis_prefix=$2 # e.g., p or n
+
+    # Get the boot priority for partition 2 (ROOT-A) and partition 4 (ROOT-B)
+    local p2_priority=$(cgpt show -i 2 -q -P "$intdis")
+    local p4_priority=$(cgpt show -i 4 -q -P "$intdis")
+
+    # If priority for 2 is higher or equal to 4 (and 2 exists), use partition 2
+    if [ -n "$p2_priority" ] && [ "$p2_priority" -ge "$p4_priority" ]; then
+        echo "${intdis}${intdis_prefix}2"
+    # Otherwise, if priority for 4 is higher (and 4 exists), use partition 4
+    elif [ -n "$p4_priority" ] && [ "$p4_priority" -ge "$p2_priority" ]; then
+        echo "${intdis}${intdis_prefix}4"
+    else
+        # Fallback if cgpt gives non-standard results or priorities are zero/unreadable
+        echo "${intdis}${intdis_prefix}2"
+    fi
+}
+
+
 while true; do
     clear
     echo ""
-    echo "    ██████╗  █████╗ ██╗   ██╗██████╗ "
-    echo "    ██╔══██╗██╔══██╗██║   ██║██╔══██╗"
-    echo "    ██║  ██║███████║██║   ██║██████╔╝"
-    echo "    ██║  ██║██╔══██║██║   ██║██╔══██╗"
-    echo "    ██████╔╝██║  ██║╚██████╔╝██████╔╝"
-    echo "    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝"
+    echo "    ██████╗  █████╗ ██╗    ██╗██████╗ "
+    echo "    ██╔══██╗██╔══██╗██║    ██║██╔══██╗"
+    echo "    ██║  ██║███████║██║    ██║██████╔╝"
+    echo "    ██║  ██║██╔══██║██║    ██║██╔══██╗"
+    echo "    ██████╔╝██║  ██║╚██████╔╝██████╔╝"
+    echo "    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝"
     echo "  depthcharge automatic update blocking"
-    echo "             found by zeglol"
-    echo "        script by HarryTarryJarry"
+    echo "            found by zeglol"
+    echo "          script by HarryTarryJarry"
     echo ""
 
     echo "1) Block updates"
@@ -64,10 +86,11 @@ while true; do
             
             get_internal || continue
             
-            # --- START FIX: Dynamically determine the active root partition ---
-            ROOT_DEV=$(rootdev -s)
+            # --- START FIX: Determine the active root partition using cgpt priority ---
+            ROOT_DEV=$(find_active_root_cgpt "$intdis" "$intdis_prefix")
+
             if [ -z "$ROOT_DEV" ]; then
-                echo "Error: Could not determine active root device using 'rootdev -s'."
+                echo "Error: Could not determine active root device using cgpt."
                 read -p "Press Enter to return to menu..."
                 continue
             fi
@@ -87,6 +110,7 @@ while true; do
                 read -p "Press Enter to return to menu..."
                 continue
             fi
+            # --- END FIX ---
             
             mount --bind /dev /localroot/dev 2>/dev/null
             if [ $? -ne 0 ]; then
@@ -137,7 +161,7 @@ while true; do
             ;;
         2)
             echo "Type 'exit' to go back to main menu"
-            bash
+            /bin/bash 2>/dev/null
             ;;
         3)
             reboot -f
@@ -148,14 +172,3 @@ while true; do
             ;;
     esac
 done
-
-# The mountlvm function remains unchanged, as it handles the stateful partition mount logic.
-mountlvm(){
-    vgchange -ay #active all volume groups
-    volgroup=$(vgscan | grep "Found volume group" | awk '{print $4}' | tr -d '"')
-    echo "found volume group:  $volgroup"
-    mount "/dev/$volgroup/unencrypted" /stateful || {
-        echo "couldnt mount p1 or lvm group.  Please recover"
-        return 1
-    }
-}
