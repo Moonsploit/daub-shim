@@ -1,9 +1,6 @@
 #!/bin/bash
 # daub script mostly written by HarryTarryJarry
-# Fix applied: Dynamic detection of the active root partition using 'rootdev -s'
-# instead of hardcoding partition 3.
 
-# Helper function to mount LVM stateful partition
 mountlvm(){
     vgchange -ay # active all volume groups
     volgroup=$(vgscan | grep "Found volume group" | awk '{print $4}' | tr -d '"')
