@@ -7,6 +7,7 @@ VERSION=1
 export TMPDIR="$SCRIPT_DIR/../temp_build"
 mkdir -p "$TMPDIR"
 mkdir -p builder/root/bin
+
 # Function to install dependencies
 install_dependencies() {
     local missing_packages=()
@@ -78,6 +79,52 @@ install_dependencies() {
     fi
 }
 
+# Function to download the BusyBox binary (NEW)
+download_busybox() {
+    local busybox_dir="$SCRIPT_DIR/bins"
+    local busybox_path="$busybox_dir/busybox"
+    
+    # Check if busybox already exists
+    if [ -f "$busybox_path" ]; then
+        log "BusyBox binary already exists."
+        return 0
+    fi
+
+    local arch_suffix
+    if [ "$HOST_ARCH" == "x86_64" ]; then
+        arch_suffix="x86_64"
+    elif [ "$HOST_ARCH" == "aarch64" ]; then
+        arch_suffix="aarch64"
+    else
+        error "Unsupported host architecture: $HOST_ARCH for BusyBox download."
+    fi
+
+    # Create the bins directory if it doesn't exist
+    mkdir -p "$busybox_dir"
+
+    log "Downloading BusyBox for $arch_suffix..."
+    # Using a common, reliable source for static BusyBox builds
+    local busybox_url="https://busybox.net/downloads/binaries/1.36.1-defconfig-multiarch-glibc/busybox-$arch_suffix"
+    
+    if command -v wget >/dev/null 2>&1; then
+        if wget -q --show-progress -O "$busybox_path" "$busybox_url"; then
+            chmod +x "$busybox_path"
+            log "Successfully downloaded and made BusyBox executable."
+            return 0
+        fi
+    elif command -v curl >/dev/null 2>&1; then
+        if curl -L -o "$busybox_path" "$busybox_url"; then
+            chmod +x "$busybox_path"
+            log "Successfully downloaded and made BusyBox executable."
+            return 0
+        fi
+    else
+        error "Neither wget nor curl found. Please install one to download BusyBox."
+    fi
+    
+    error "Failed to download BusyBox from $busybox_url"
+}
+
 # Check and install required dependencies
 check_dependencies() {
     # Required packages
@@ -101,6 +148,15 @@ else
 fi
 
 source $SCRIPT_DIR/functions.sh
+
+# --- BUSYBOX DOWNLOAD AND SETUP ---
+# Ensure the busybox binary is present in the bins directory
+download_busybox
+
+# Copy the downloaded BusyBox into the new rootfs and create the symlink/alias
+cp "$SCRIPT_DIR/bins/busybox" builder/root/bin/busybox
+ln -sf busybox builder/root/bin/bash
+# ----------------------------------
 
 echo "DAUB Shim Builder"
 echo "Before building, huge credits to the MercuryWorkshop team for their work on wax,"
