@@ -27,3 +27,5 @@ After it is done flashing, go on your chromebook and enter developer mode, then 
 [Kxtzownsu](https://github.com/kxtzownsu) - creating kvs builder
 
 [HarryTarryJarry](https://github.com/HarryTarryJarry) - creating daub script
+
+[zeglol](https://github.com/ZeglolTheThirtySixth) - finding daub
