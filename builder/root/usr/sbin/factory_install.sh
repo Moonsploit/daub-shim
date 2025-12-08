@@ -1,13 +1,6 @@
 #!/bin/bash
 # daub script mostly by HarryTarryJarry
 
-fail(){
-	printf "$1\n"
-	printf "exiting...\n"
-	read -p "Press Enter to return to menu..."
-	return 1
-}
-
 get_internal() {
 	# get_largest_cros_blockdev does not work in BadApple.
 	local ROOTDEV_LIST=$(cgpt find -t rootfs) # thanks stella
