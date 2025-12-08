@@ -262,5 +262,4 @@ fi
 # Silent cleanup of temp_build directory
 rm -rf "$TMPDIR" 2>/dev/null
 
-log "Done building DAUB!"
 trap - EXIT
