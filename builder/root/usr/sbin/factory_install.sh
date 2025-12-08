@@ -16,7 +16,7 @@ while true; do
     echo ""
 
     echo "1) Block updates"
-    echo "2) Shell"
+    echo "2) Bash shell"
     echo "3) Reboot"
     read -p "Choose option: " choice
 
