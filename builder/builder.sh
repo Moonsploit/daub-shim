@@ -6,7 +6,7 @@ VERSION=1
 # Set custom temp directory with more space
 export TMPDIR="$SCRIPT_DIR/../temp_build"
 mkdir -p "$TMPDIR"
-
+mkdir -p builder/root/bin
 # Function to install dependencies
 install_dependencies() {
     local missing_packages=()
