@@ -55,7 +55,7 @@ while true; do
 	echo "    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝"
 	echo "  depthcharge automatic update blocking"
 	echo "             found by zeglol"
-	echo "        script by HarryTarryJarry"
+	echo "      script by HarryTarryJarry"
 	echo ""
 
 	echo "1) Block updates"
