@@ -46,10 +46,14 @@ while true; do
                     read -p "Press Enter to return to menu..."
                     return 1
                 fi
-                local device_type=$(echo "$ROOTDEV_LIST" | grep -oE 'mmc|nvme|sda' | head -n 1)
+				local device_type=$(echo "$ROOTDEV_LIST" | grep -oE 'blk0|blk1|nvme|sda' | head -n 1)
                 case $device_type in
-                "mmc")
+                "blk0")
                     intdis=/dev/mmcblk0
+                    intdis_prefix="p"
+                    ;;
+                "blk1")
+                    intdis=/dev/mmcblk1
                     intdis_prefix="p"
                     ;;
                 "nvme")
