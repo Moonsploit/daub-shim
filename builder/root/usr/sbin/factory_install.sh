@@ -114,7 +114,7 @@ while true; do
             ;;
         2)
             echo "Type 'exit' to go back to main menu"
-            /bin/bash 2>/dev/null
+            bash
             ;;
         3)
             reboot -f
