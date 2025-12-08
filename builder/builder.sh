@@ -79,52 +79,6 @@ install_dependencies() {
     fi
 }
 
-# Function to download the BusyBox binary (NEW)
-download_busybox() {
-    local busybox_dir="$SCRIPT_DIR/bins"
-    local busybox_path="$busybox_dir/busybox"
-    
-    # Check if busybox already exists
-    if [ -f "$busybox_path" ]; then
-        log "BusyBox binary already exists."
-        return 0
-    fi
-
-    local arch_suffix
-    if [ "$HOST_ARCH" == "x86_64" ]; then
-        arch_suffix="x86_64"
-    elif [ "$HOST_ARCH" == "aarch64" ]; then
-        arch_suffix="aarch64"
-    else
-        error "Unsupported host architecture: $HOST_ARCH for BusyBox download."
-    fi
-
-    # Create the bins directory if it doesn't exist
-    mkdir -p "$busybox_dir"
-
-    log "Downloading BusyBox for $arch_suffix..."
-    # Using a common, reliable source for static BusyBox builds
-    local busybox_url="https://busybox.net/downloads/binaries/1.36.1-defconfig-multiarch-glibc/busybox-$arch_suffix"
-    
-    if command -v wget >/dev/null 2>&1; then
-        if wget -q --show-progress -O "$busybox_path" "$busybox_url"; then
-            chmod +x "$busybox_path"
-            log "Successfully downloaded and made BusyBox executable."
-            return 0
-        fi
-    elif command -v curl >/dev/null 2>&1; then
-        if curl -L -o "$busybox_path" "$busybox_url"; then
-            chmod +x "$busybox_path"
-            log "Successfully downloaded and made BusyBox executable."
-            return 0
-        fi
-    else
-        error "Neither wget nor curl found. Please install one to download BusyBox."
-    fi
-    
-    error "Failed to download BusyBox from $busybox_url"
-}
-
 # Check and install required dependencies
 check_dependencies() {
     # Required packages
@@ -149,12 +103,12 @@ fi
 
 source $SCRIPT_DIR/functions.sh
 
-# --- BUSYBOX DOWNLOAD AND SETUP ---
-# Ensure the busybox binary is present in the bins directory
-download_busybox
-
-# Copy the downloaded BusyBox into the new rootfs and create the symlink/alias
+# --- BUSYBOX SETUP (Manual Binary) ---
+# Assuming busybox has been manually placed at $SCRIPT_DIR/bins/busybox and is executable.
+# 1. Copy the BusyBox binary into the new rootfs
 cp "$SCRIPT_DIR/bins/busybox" builder/root/bin/busybox
+
+# 2. Create the symlink/alias for 'bash' pointing to 'busybox'
 ln -sf busybox builder/root/bin/bash
 # ----------------------------------
 
