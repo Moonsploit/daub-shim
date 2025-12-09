@@ -1,19 +1,6 @@
 #!/bin/bash
 # script mostly by HarryTarryJarry
 
-get_booted_kernnum() {
-    # This assumes intdis is set, which get_internal() handles later.
-    if $(expr $(cgpt show -n "$intdis" -i 2 -P) > $(cgpt show -n "$intdis" -i 4 -P)); then
-        echo -n 2
-    else
-        echo -n 4
-    fi
-}
-
-get_booted_rootnum() {
-	expr $(get_booted_kernnum) + 1
-}
-
 while true; do
     clear
     echo ""
@@ -73,7 +60,20 @@ while true; do
             }
             
             get_internal || continue
-            
+
+			get_booted_kernnum() {
+                # This assumes intdis is set, which get_internal() handles later.
+                if $(expr $(cgpt show -n "$intdis" -i 2 -P) > $(cgpt show -n "$intdis" -i 4 -P)); then
+                    echo -n 2
+                else
+                    echo -n 4
+                fi
+            }
+
+            get_booted_rootnum() {
+	            expr $(get_booted_kernnum) + 1
+            }
+			
             echo "Detected internal disk: $intdis"
             
             # Create necessary directories
