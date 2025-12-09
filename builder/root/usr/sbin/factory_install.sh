@@ -1,5 +1,4 @@
 #!/bin/bash
-# script mostly by HarryTarryJarry
 
 while true; do
     clear
@@ -114,6 +113,17 @@ while true; do
             rmdir /localroot
             
             crossystem disable_dev_request=1 2>/dev/null
+            
+            # Try to mount stateful partition
+            if ! mount "${intdis}${intdis_prefix}1" /stateful 2>/dev/null; then
+                mountlvm
+                if [ $? -ne 0 ]; then
+                    read -p "Press Enter to return to menu..."
+                    continue
+                fi
+            fi
+            
+            # Clear stateful partition
             rm -rf /stateful/*
             umount /stateful
             echo "daub completed successfully!"
