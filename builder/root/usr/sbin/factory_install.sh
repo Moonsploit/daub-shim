@@ -114,19 +114,20 @@ while true; do
             rmdir /localroot
             
             crossystem disable_dev_request=1 2>/dev/null
-            
-            # Try to mount stateful partition
-            if ! mount "${intdis}${intdis_prefix}1" /stateful 2>/dev/null; then
+
+            if mount "${intdis}${intdis_prefix}1" /stateful 2>/dev/null; then
+                umount /stateful
+                chroot /localroot mkfs.ext4 -F "${intdis}${intdis_prefix}1"
+            else
                 mountlvm
                 if [ $? -ne 0 ]; then
                     read -p "Press Enter to return to menu..."
                     continue
                 fi
+                rm -rf /stateful/*
+                umount /stateful
             fi
-            
-            # Clear stateful partition
-            rm -rf /stateful/*
-            umount /stateful
+
             echo "daub completed successfully!"
             echo "DO NOT POWERWASH IN CHROMEOS! YOUR DEVICE WILL BOOTLOOP!"
             echo "(bootloop is fixable by recovering)"
