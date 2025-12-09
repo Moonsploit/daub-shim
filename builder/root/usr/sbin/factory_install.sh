@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 while true; do
     clear
@@ -21,7 +21,6 @@ while true; do
 
     case $choice in
         1)
-            echo "Starting Daub..."
             
             # get_internal take from https://github.com/applefritter-inc/BadApple-icarus
             get_internal() {
