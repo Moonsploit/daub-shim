@@ -1,14 +1,9 @@
 # daub-shim
 daub as a shim
 ### Build Instructions
-1) Clone the repo: <br />
 ```
 git clone https://github.com/Moonsploit/daub-shim.git
 cd daub-shim/builder/
-```
-
-2) Run the builder: <br />
-```
 sudo bash builder.sh board
 ```
 
