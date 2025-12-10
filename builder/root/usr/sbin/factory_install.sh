@@ -126,8 +126,9 @@ while true; do
             # Clear stateful partition
             rm -rf /stateful/*
             umount /stateful
-            echo "DO NOT POWERWASH IN CHROMEOS! YOUR DEVICE WILL BOOTLOOP! (bootloop is fixable by recovering)"
-            echo "Daub completed successfully!"
+			echo "Daub completed successfully!"
+            echo "DO NOT POWERWASH IN CHROMEOS! YOUR DEVICE WILL BOOTLOOP!"
+			echo "(bootloop is fixable by recovering)"
             read -p "Press Enter to return to menu..."
             ;;
         2)
