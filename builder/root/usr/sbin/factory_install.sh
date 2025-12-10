@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 while true; do
     clear
@@ -21,6 +21,7 @@ while true; do
 
     case $choice in
         1)
+            echo "Starting Daub..."
             
             # get_internal take from https://github.com/applefritter-inc/BadApple-icarus
             get_internal() {
@@ -125,9 +126,8 @@ while true; do
             # Clear stateful partition
             rm -rf /stateful/*
             umount /stateful
-            echo "daub completed successfully!"
-            echo "DO NOT POWERWASH IN CHROMEOS! YOUR DEVICE WILL BOOTLOOP!"
-            echo "(bootloop is fixable by recovering)"
+            echo "DO NOT POWERWASH IN CHROMEOS! YOUR DEVICE WILL BOOTLOOP! (bootloop is fixable by recovering)"
+            echo "Daub completed successfully!"
             read -p "Press Enter to return to menu..."
             ;;
         2)
@@ -138,7 +138,7 @@ while true; do
             reboot -f
             ;;
         *)
-            echo "Invalid option, please try again."
+            echo "Invalid option, please try again..."
             read -p "Press Enter to return to menu..."
             ;;
     esac
